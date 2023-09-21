@@ -1,0 +1,21 @@
+// Year must be 4 digits, but is otherwise unconstrained
+iso8601_strict_year = { ASCII_DIGIT{4} }
+
+// Month must be 01 through 12
+iso8601_strict_month = { ( "0" ~ ASCII_NONZERO_DIGIT) | ("1" ~ '0'..'2') }
+// Lax version allows optional leading zero for single digit months
+iso8601_lax_month = { iso8601_strict_month | ASCII_NONZERO_DIGIT }
+
+// Day must be 01 through 31; single digit days may have leading 0 (i.e., 01)
+iso8601_strict_day = { ("30" | "31") | ("0" ~ ASCII_NONZERO_DIGIT) | ('1'..'2' ~ ASCII_DIGIT) }
+// Day must be 1 through 31; single digit days may have leading 0 (i.e., 01)
+iso8601_lax_day = { iso8601_strict_day | ASCII_NONZERO_DIGIT }
+
+// The standard ISO 8601 format date has no separators, i.e., YYYYMMDD
+iso8601_strict_date_standard = @{ iso8601_strict_year ~ iso8601_strict_month ~ iso8601_strict_day }
+// The extended ISO 8601 date format includes single hyphen separators, i.e., YYYY-MM-DD
+iso8601_strict_date_extended = @{ iso8601_strict_year ~ "-" ~ iso8601_strict_month ~ "-" ~ iso8601_strict_day  }
+
+// TODO: remove? lack of separators confuses parsing. 1999123 could be 1-23 or 12-3 of 1999
+// iso8601_lax_date_standard = @{ iso8601_strict_year ~ iso8601_lax_month ~ iso8601_lax_day }
+iso8601_lax_date_extended = @{ iso8601_strict_year ~ "-" ~ iso8601_lax_month ~ "-" ~ iso8601_lax_day }
